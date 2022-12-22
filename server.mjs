@@ -41,6 +41,9 @@ const userSchema = new mongoose.Schema({
 
 const userModel = mongoose.model('Users', userSchema);
 
+
+//////////////////  SIGNUP API ////////////////////////////////////
+
 app.post('/signup', (req, res) => {
 
     let body = req.body;
@@ -102,8 +105,8 @@ app.post('/signup', (req, res) => {
                                     error: err
                                 });
                             }
-                        })
-                })
+                        });
+                });
 
             }
         } else {
@@ -114,9 +117,162 @@ app.post('/signup', (req, res) => {
             });
             return;
         }
-    })
-})
+    });
+});
+//////////////////////////////////////////////////////////////////
 
+
+
+
+//////////////////  LOGIN API ////////////////////////////////////
+
+
+app.post('/login', (req, res) => {
+    let body = req.body;
+    body.email = body.email.toLowerCase();
+
+    if (
+        !body.password || !body.email
+    ) {
+        res.status(400).send({
+            message: `some thing is missing in required fields `,
+            example: `here is a request example :
+             {
+                email: "abc@123.com",
+                password: "*******"
+             } `
+        });
+        return;
+    }
+
+    userModel.findOne({ email: body.email },
+        'email password firstName lastName', (err, user) => {
+
+            if (!err) {
+
+                console.log('user ===> ', user);
+
+                if (user) {
+                    varifyHash(body.password, user.password)
+                        .then(isMatch => {
+                            console.log('isMatch ===>', isMatch);
+                            if (isMatch) {
+
+                                const token = jwt.sign({
+                                    id: data_id,
+                                    email: body.email,
+                                    iat: Math.floor(Date.now() / 1000) - 30,
+                                    exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24)
+
+                                }, SECRET);
+
+                                console.log('token ===> ', token);
+
+                                res.cookie('Token', token, {
+                                    maxAge: 86_400_000,
+                                    httpOnly: true
+                                });
+
+                                res.send({
+                                    message: 'logedin successfully',
+                                    userProfile: {
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        email: user.email,
+                                        _id: user._id
+                                    }
+                                });
+                                return;
+
+                            } else {
+                                console.log("password did not match");
+                                res.status(401).send({
+                                    message: "wrong password"
+                                });
+                                return;
+                            }
+                        });
+                } else {
+                    console.log('user not found');
+
+                    res.status(401).send({
+                        message: 'incorrect email user does not exist'
+                    })
+                    return;
+                }
+
+            } else {
+                console.log('server error ===>', err);
+                res.status(500).send({
+                    message: "login failed, please try again later"
+                });
+                return;
+            }
+        });
+});
+///////////////////////////////////////////////////////////////////
+
+
+
+
+//////////////////  LOGOUT API ////////////////////////////////////
+
+app.post('/logout', (req, res) => {
+    res.cookie('Token', '', {
+        maxAge: 1,
+        httpOnly: true
+    });
+
+    res.send({
+        message: 'Logout successfully'
+    });
+});
+///////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////*******************////////////////////////////////////////
+
+// app.use((req, res, next) => {
+
+//     console.log("req.cookies: ", req.cookies);
+
+//     if (!req?.cookies?.Token) {
+//         res.status(401).send({
+//             message: "include http-only credentials with every request"
+//         })
+//         return;
+//     }
+
+//     jwt.verify(req.cookies.Token, SECRET, function (err, decodedData) {
+//         if (!err) {
+
+//             console.log("decodedData: ", decodedData);
+
+//             const nowDate = new Date().getTime() / 1000;
+
+//             if (decodedData.exp < nowDate) {
+
+//                 res.status(401);
+//                 res.cookie('Token', '', {
+//                     maxAge: 1,
+//                     httpOnly: true
+//                 });
+//                 res.send({ message: "token expired" })
+
+//             } else {
+
+//                 console.log("token approved");
+
+//                 req.body.token = decodedData
+//                 next();
+//             }
+//         } else {
+//             res.status(401).send("invalid token")
+//         }
+//     });
+// })
+
+///////////////////////////////////////////////////////////////////////////////
 
 
 const __dirname = path.resolve();
