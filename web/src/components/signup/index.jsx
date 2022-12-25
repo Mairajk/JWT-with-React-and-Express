@@ -1,12 +1,11 @@
 import { useFormik } from "formik"
 import * as yup from 'yup';
 
-// import Button from '@material-ui/core/Button';
-// import TextField from '@material-ui/core/TextField';
-import { TextField, Button } from '@mui/material'
+import { TextField, Button, Grid } from '@mui/material'
 
 
 const Signup = () => {
+
     const formik = useFormik({
         initialValues: {
             firstName: "",
@@ -53,73 +52,93 @@ const Signup = () => {
 
     return (
 
-        <div className="formDiv">
+        <div className="signupDiv">
 
-            <h1> Validation Form </h1>
+            <h1>Signup</h1>
             <form onSubmit={formik.handleSubmit}>
-                <TextField
-                    fullWidth
-                    type="text"
-                    id="firstName"
-                    value={formik.values.firstName}
-                    placeholder="Enter you first name :"
-                    onChange={formik.handleChange}
-                    label='First Name'
-                    error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                    helperText={formik.touched.firstName && formik.errors.firstName}
 
-                />
+                <Grid
+                    container
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                >
 
+                    <TextField
+                        margin="dense"
+                        variant="outlined"
+                        type="text"
+                        id="firstName"
+                        value={formik.values.firstName}
+                        // placeholder="Enter you first name :"
+                        onChange={formik.handleChange}
+                        label='First Name'
+                        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                        helperText={formik.touched.firstName && formik.errors.firstName}
 
-                <TextField
-                    fullWidth
-                    type="text"
-                    id="lastName"
-                    value={formik.values.lastName}
-                    placeholder="Enter you last name :"
-                    onChange={formik.handleChange}
-                    label='Last Name '
-                    error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                    helperText={formik.touched.lastName && formik.errors.lastName}
-
-                />
+                    />
 
 
-                <TextField
-                    fullWidth
-                    type="email"
-                    id="email"
-                    value={formik.values.email}
-                    placeholder="Enter your Email :"
-                    onChange={formik.handleChange}
-                    error={formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
+                    <TextField
+                        margin="dense"
+                        variant="outlined"
+                        type="text"
+                        id="lastName"
+                        value={formik.values.lastName}
+                        // placeholder="Enter you last name :"
+                        onChange={formik.handleChange}
+                        label='Last Name '
+                        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                        helperText={formik.touched.lastName && formik.errors.lastName}
 
-                />
+                    />
 
 
-                <TextField
-                    fullWidth
-                    type="password"
-                    id="password"
-                    value={formik.values.password}
-                    placeholder="Enter your password :"
-                    onChange={formik.handleChange}
-                    error={formik.touched.password && Boolean(formik.errors.password)}
-                    helperText={formik.touched.password && formik.errors.password}
-                />
+                    <TextField
+                        margin="dense"
+                        variant="outlined"
+                        type="email"
+                        id="email"
+                        value={formik.values.email}
+                        label='Email'
+                        // placeholder="Enter your Email :"
+                        onChange={formik.handleChange}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
+
+                    />
+
+
+                    <TextField
+                        margin="dense"
+                        variant="outlined"
+                        type="password"
+                        id="password"
+                        value={formik.values.password}
+                        label='Password'
+                        // placeholder="Enter your password :"
+                        onChange={formik.handleChange}
+                        error={formik.touched.password && Boolean(formik.errors.password)}
+                        helperText={formik.touched.password && formik.errors.password}
+                    />
+
+                </Grid>
 
                 <Button
-                    fullWidth
+                    // fullWidth
                     color="primary"
                     variant="contained"
-                    type="submit">
+                    type="submit"
+                    margin="dense"
+                    sx={{ mt: 2 }}
+                >
                     Signup
                 </Button>
+
             </form>
         </div>
     )
-}
+};
 
 
 export default Signup;
