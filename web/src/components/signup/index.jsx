@@ -1,8 +1,14 @@
 import { useFormik } from "formik"
 import * as yup from 'yup';
+import axios from 'axios';
+
 
 import { TextField, Button, Grid } from '@mui/material'
 
+let baseURL = '';
+if (window.location.href.split(':')[0] === 'http') {
+    baseURL = 'http://localhost:5001'
+};
 
 const Signup = () => {
 
@@ -47,6 +53,26 @@ const Signup = () => {
         onSubmit: (values) => {
             console.log("values : ", values);
 
+            const signupHandler = () => {
+
+                axios.post(`${baseURL}/signup`, {
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    email: values.email,
+                    password: values.password
+                })
+                    .then((res) => {
+                        console.log('response ===>', res);
+                        console.log('Signup successfull');
+                        // setIsSignup(false);
+                        // setIsLogin(false);
+                    })
+                    .catch((err) => {
+                        console.log('error ===>', err);
+                    })
+            };
+
+            signupHandler();
         }
     });
 
@@ -70,7 +96,7 @@ const Signup = () => {
                         type="text"
                         id="firstName"
                         value={formik.values.firstName}
-                        // placeholder="Enter you first name :"
+                        placeholder="Enter you first name :"
                         onChange={formik.handleChange}
                         label='First Name'
                         error={formik.touched.firstName && Boolean(formik.errors.firstName)}
@@ -85,7 +111,7 @@ const Signup = () => {
                         type="text"
                         id="lastName"
                         value={formik.values.lastName}
-                        // placeholder="Enter you last name :"
+                        placeholder="Enter you last name :"
                         onChange={formik.handleChange}
                         label='Last Name '
                         error={formik.touched.lastName && Boolean(formik.errors.lastName)}
@@ -101,7 +127,7 @@ const Signup = () => {
                         id="email"
                         value={formik.values.email}
                         label='Email'
-                        // placeholder="Enter your Email :"
+                        placeholder="Enter your Email :"
                         onChange={formik.handleChange}
                         error={formik.touched.email && Boolean(formik.errors.email)}
                         helperText={formik.touched.email && formik.errors.email}
@@ -116,7 +142,7 @@ const Signup = () => {
                         id="password"
                         value={formik.values.password}
                         label='Password'
-                        // placeholder="Enter your password :"
+                        placeholder="Enter your password :"
                         onChange={formik.handleChange}
                         error={formik.touched.password && Boolean(formik.errors.password)}
                         helperText={formik.touched.password && formik.errors.password}

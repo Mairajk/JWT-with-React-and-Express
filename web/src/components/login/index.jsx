@@ -1,8 +1,16 @@
 import { useFormik } from "formik"
 import * as yup from 'yup';
+import axios from 'axios';
 
 import { TextField, Button, Grid } from '@mui/material'
 
+
+
+
+let baseURL = '';
+if (window.location.href.split(':')[0] === 'http') {
+    baseURL = 'http://localhost:5001'
+};
 
 const Login = () => {
 
@@ -33,6 +41,23 @@ const Login = () => {
         onSubmit: (values) => {
             console.log("values : ", values);
 
+            const loginHandler = () => {
+
+                axios.post(`${baseURL}/login`, {
+                    email: values.email,
+                    password: values.password
+                })
+                    .then((res) => {
+                        console.log('response ===>', res);
+                        // setIsLogin(true);
+                    })
+                    .catch((err) => {
+                        console.log('error ===>', err);
+                    })
+            };
+
+            loginHandler();
+
         }
     });
 
@@ -54,6 +79,7 @@ const Login = () => {
                         margin="dense"
                         variant="outlined"
                         type="email"
+                        placeholder="Enter your email"
                         id="email"
                         value={formik.values.email}
                         label='Email'
@@ -68,6 +94,7 @@ const Login = () => {
                         margin="dense"
                         variant="outlined"
                         type="password"
+                        placeholder="Enter your password"
                         id="password"
                         value={formik.values.password}
                         label='Password'
