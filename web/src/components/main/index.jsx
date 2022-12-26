@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { GlobalContext } from '../../context/context';
 import axios from 'axios';
 import Signup from "../signup";
 import Login from "../login";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
+
+
+import Home from "../Home";
+import About from "../About";
+import Gallery from "../Gallery";
 
 
 
@@ -12,13 +19,107 @@ if (window.location.href.split(':')[0] === 'http') {
 
 const Main = () => {
 
+
+    const [isLogin, setIsLogin] = useState(false);
+    const [isSignup, setIsSignup] = useState(false);
+
+    let { state, dispatch } = useContext(GlobalContext);
+
+
+
+
     return (
-        <div>
-            <Signup />
-            <Login />
+        <div className="page">
+            <div className="header">
+                <h1>Posting App</h1>
+                {
+                    (state.isLogin) ?
+                        <nav>
+                            <ul>
+                                <li><Link to={`/`}>Home</Link></li>
+                                <li><Link to={`/about`}>About</Link></li>
+                                <li><Link to={`/gallery`}>Gallery</Link></li>
+                                <li
+                                    onClick={() => {
+                                        setIsLogin(!isLogin)
+                                    }}>
+                                    <Link to={`/`}>Logout</Link></li>
+                            </ul>
+                        </nav>
+                        :
+                        <nav>
+                            <ul>
+
+                                <li
+                                    onClick={() => {
+                                        setIsSignup(!isSignup)
+                                    }}>
+                                    <Link to={`/signup`}>Signup</Link></li>
+
+                                <li
+                                    onClick={() => {
+                                        setIsSignup(!isSignup)
+                                    }}>
+                                    <Link to={`/`}>Already have an account</Link></li>
+
+                            </ul>
+
+                        </nav>
+                }
+            </div>
+
+            {
+                (state.isLogin) ?
+
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/about" element={<About />} />
+                        <Route path="/gallery" element={<Gallery />} />
+                        <Route path="*" element={<Navigate to={`/`} replace={true} />} />
+                    </Routes>
+
+                    :
+
+
+                    <Routes>
+
+                        <Route path="/signup" element={<Signup />} />
+                        <Route path="/" element={<Login />} />
+                        <Route path="*" element={<Navigate to={`/`} replace={true} />} />
+
+                    </Routes>
+
+
+
+            }
+
         </div>
-    )
+    );
+
+    // return (
+    //     <div>
+    //         <Signup />
+    //         <Login />
+    //     </div>
+    // )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // const Main = () => {
 

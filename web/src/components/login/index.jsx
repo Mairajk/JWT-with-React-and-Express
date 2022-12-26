@@ -1,3 +1,7 @@
+import { useState, useContext } from "react";
+import { GlobalContext } from '../../context/context';
+
+
 import { useFormik } from "formik"
 import * as yup from 'yup';
 import axios from 'axios';
@@ -13,6 +17,9 @@ if (window.location.href.split(':')[0] === 'http') {
 };
 
 const Login = () => {
+
+    let { state, dispatch } = useContext(GlobalContext);
+
 
     const formik = useFormik({
         initialValues: {
@@ -46,8 +53,16 @@ const Login = () => {
                 axios.post(`${baseURL}/login`, {
                     email: values.email,
                     password: values.password
+                }, {
+                    withCredentials: true
                 })
                     .then((res) => {
+
+                        dispatch({
+                            type: 'USER_LOGIN',
+                            payload: null
+                        })
+
                         console.log('response ===>', res);
                         // setIsLogin(true);
                     })
